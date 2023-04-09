@@ -9,6 +9,12 @@ export const arweave = Arweave.init({
   protocol: "https",
 });
 
+export const arweaveLocal = Arweave.init({
+  host: "localhost",
+  port: 1984,
+  protocol: "http",
+});
+
 export const webWallet = new ArweaveWebWallet({
   name: "your_app_name_here",
 });

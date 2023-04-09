@@ -1,6 +1,13 @@
 import type { AppProps } from "next/app";
 import { darkTheme, globalCss } from "@aura-ui/react";
 import { ThemeProvider } from "next-themes";
+import { ConnectProvider } from "arweave-wallet-ui-test";
+import {
+  useQuery,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
 const globalStyles = globalCss({
   "*, *::before, *::after": {
@@ -15,7 +22,8 @@ const globalStyles = globalCss({
     height: "100%",
     fontFamily: "$body",
     margin: 0,
-    backgroundColor: "$slate1",
+    backgroundColor: "$indigo1",
+    color: "$indigo11",
   },
 
   "#__next": {
@@ -29,14 +37,20 @@ const globalStyles = globalCss({
 
 globalStyles();
 
+const queryClient = new QueryClient();
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <ThemeProvider
-      disableTransitionOnChange
-      attribute="class"
-      value={{ light: "light-theme", dark: darkTheme.toString() }}
-    >
-      <Component {...pageProps} />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ConnectProvider>
+        <ThemeProvider
+          disableTransitionOnChange
+          attribute="class"
+          value={{ light: "light-theme", dark: darkTheme.toString() }}
+        >
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </ConnectProvider>
+    </QueryClientProvider>
   );
 }
