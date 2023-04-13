@@ -9,7 +9,7 @@ type EnrichedHTMLIFrameElement = HTMLIFrameElement & {
   ___onWindowFocusHandled: boolean;
 };
 
-type SetFocusedCallback = (focused?: boolean | undefined) => void;
+type SetFocusedCallback = (focused?: boolean) => void;
 
 const state: State = {
   added: false,
@@ -19,6 +19,9 @@ const state: State = {
 };
 
 export const onWindowFocus = (newCallback: SetFocusedCallback) => {
+  if (typeof window === "undefined") {
+    return;
+  }
   state.callbacks.push(newCallback);
   start();
   return () => {

@@ -1,4 +1,4 @@
-import { arweaveLocal, connect, webWallet } from "./arweave";
+import { arweave, arweaveLocal, connect, webWallet } from "./arweave";
 import arweaveGql, { Transaction } from "arweave-graphql";
 import { addFunds, mineBlock } from "./utils";
 import { Bookmark, UploadData } from "@/types";
@@ -10,17 +10,18 @@ export const saveTx = async (upload: UploadData) => {
     });
     const exists = data.transactions.edges.length > 0;
     if (exists) {
-      let address;
-      if (!upload.address) {
-        address = await window.arweaveWallet.getActiveAddress();
-      }
-      await addFunds(arweaveLocal, upload.address || (address as string));
-      await mineBlock(arweaveLocal);
+      // let address;
+      // if (!upload.address) {
+      //   address = await window.arweaveWallet.getActiveAddress();
+      // }
+      // await addFunds(arweaveLocal, upload.address || (address as string));
+      // await mineBlock(arweaveLocal);
 
-      const savedTx = await arweaveLocal.createTransaction({
+      const savedTx = await arweave.createTransaction({
         data: `Bookmark: ${upload.targetId}`,
       });
-      savedTx.addTag("App-Name", "Permalib");
+      savedTx.addTag("App-Name", "Permalib-alpha");
+      savedTx.addTag("App-Version", "0.0.1");
       savedTx.addTag("Data-Source", upload.targetId);
       savedTx.addTag("Title", upload.name);
       savedTx.addTag("Type", "bookmark");
@@ -47,13 +48,17 @@ export const getBookmarks = async (address: string | undefined) => {
   }
   try {
     const data = await arweaveGql(
-      `${"http://localhost:1984"}/graphql`
+      `${"https://arweave.net"}/graphql`
     ).getTransactions({
       owners: address,
       tags: [
         {
           name: "Type",
           values: ["bookmark"],
+        },
+        {
+          name: "App-Name",
+          values: ["Permalib-alpha"],
         },
       ],
     });
@@ -71,7 +76,7 @@ export const getBookmarks = async (address: string | undefined) => {
 
 const transform = (node: Transaction) => {
   const name = node.tags.find((tag) => tag.name === "Title")?.value;
-  const targetId = node.tags.find((tag) => tag.name === "Bookmarks")?.value;
+  const targetId = node.tags.find((tag) => tag.name === "Data-Source")?.value;
 
   return {
     name,

@@ -2,12 +2,7 @@ import type { AppProps } from "next/app";
 import { darkTheme, globalCss } from "@aura-ui/react";
 import { ThemeProvider } from "next-themes";
 import { ConnectProvider } from "arweave-wallet-ui-test";
-import {
-  useQuery,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const globalStyles = globalCss({
   "*, *::before, *::after": {
@@ -22,7 +17,7 @@ const globalStyles = globalCss({
     height: "100%",
     fontFamily: "$body",
     margin: 0,
-    backgroundColor: "$indigo1",
+    backgroundColor: "$indigo2",
     color: "$indigo11",
   },
 

@@ -42,5 +42,8 @@ dist/
 wallet.json
 keyfile.json
 
+#arlocal
+logs
+
 # bundlr
 out-*

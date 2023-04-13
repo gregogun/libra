@@ -43,21 +43,16 @@ interface BookmarkFormValues {
 
 export const CreateDialog = ({ children }: CreateDialogProps) => {
   const [uploadError, setUploadError] = useState<string>();
-  const [uploadValues, setUploadValues] = useState<BookmarkFormValues>({
-    name: "",
-    targetId: "",
-  });
-  const [open, setOpen] = useState(false);
   const { walletAddress } = useConnect();
   const queryClient = useQueryClient();
 
+  // move logic outside of dialog
   const mutation = useMutation({
     mutationFn: saveTx,
     onSuccess: () => {
       formik.setSubmitting(false);
       formik.resetForm();
-      focusManager.setFocused(true);
-      setOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
     },
     onError: (error: any) => {
       console.log("error is", error);
@@ -77,8 +72,8 @@ export const CreateDialog = ({ children }: CreateDialogProps) => {
 
   const formik = useFormik<BookmarkFormValues>({
     initialValues: {
-      name: uploadValues.name,
-      targetId: uploadValues.targetId,
+      name: "",
+      targetId: "",
     },
     validateOnBlur: false,
     validateOnChange: false,
@@ -92,8 +87,9 @@ export const CreateDialog = ({ children }: CreateDialogProps) => {
       if (uploadError) {
         setUploadError("");
       }
-      setUploadValues({ name: values.name, targetId: values.targetId });
       setSubmitting(true);
+      console.log(values);
+
       mutation.mutate({
         name: values.name,
         targetId: values.targetId,
@@ -103,10 +99,8 @@ export const CreateDialog = ({ children }: CreateDialogProps) => {
   });
 
   return (
-    <Dialog open={open} onOpenChange={() => setOpen(!open)}>
-      <DialogTrigger onClick={() => setOpen(true)} asChild>
-        {children}
-      </DialogTrigger>
+    <Dialog onOpenChange={() => formik.resetForm()}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogPortal>
         <DialogOverlay
           css={{
@@ -233,13 +227,6 @@ export const CreateDialog = ({ children }: CreateDialogProps) => {
                   {uploadError}
                 </Typography>
               )}
-              <Button
-                onClick={() =>
-                  queryClient.invalidateQueries({ queryKey: ["bookmarks"] })
-                }
-              >
-                Invalidate queries
-              </Button>
               <FormSubmit asChild>
                 <Button
                   disabled={formik.isSubmitting}
