@@ -26,7 +26,7 @@
     "arweave": "1.12.4",
     "arweave-account": "1.3.4",
     "arweave-graphql": "0.0.5",
-    "arweave-wallet-ui-test": "0.0.10",
+    "arweave-wallet-ui-test": "0.0.11",
     "formik": "2.2.9",
     "motion": "10.15.5",
     "motion-hooks": "0.1.1",
