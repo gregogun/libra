@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { Box, Button, Flex, Link, styled, Typography } from "@aura-ui/react";
 import { ConnectWallet, useConnect } from "arweave-wallet-ui-test";
-import { account } from "@/lib/arweave";
+import { account, getAccount } from "@/lib/arweave";
 import { getBookmarks } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRightIcon, BookmarkFilledIcon } from "@radix-ui/react-icons";
@@ -65,6 +65,19 @@ export default function Home() {
       play();
     }
   }, [data, walletAddress]);
+
+  useEffect(() => {
+    if (walletAddress) {
+      getAcc();
+    }
+  }, [walletAddress]);
+
+  const getAcc = async () => {
+    if (!walletAddress) return;
+
+    const account = await getAccount(walletAddress);
+    console.log(account);
+  };
 
   return (
     <>
