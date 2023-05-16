@@ -2,12 +2,12 @@ import Head from "next/head";
 import { Box, Button, Flex, Link, styled, Typography } from "@aura-ui/react";
 import { ConnectWallet, useConnect } from "arweave-wallet-ui-test";
 import { account } from "@/lib/arweave";
-import { getBookmarks, saveTx } from "@/lib/api";
-import { focusManager, useQuery } from "@tanstack/react-query";
+import { getBookmarks } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowRightIcon, BookmarkFilledIcon } from "@radix-ui/react-icons";
 import { useMotionAnimate } from "motion-hooks";
 import { stagger } from "motion";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Loader } from "@/ui/Loader";
 import { CreateDialog } from "@/modules/CreateDialog/CreateDialog";
 import {
@@ -55,7 +55,8 @@ export default function Home() {
   const { data, isLoading, isSuccess, isError, status } = useQuery({
     queryKey: ["bookmarks"],
     queryFn: () => getBookmarks(walletAddress),
-    // enabled: !!walletAddress,
+    enabled: !!walletAddress,
+    // refetchInterval: 3000,
   });
 
   // Play the animation on mount of the component
@@ -79,18 +80,22 @@ export default function Home() {
         }}
         justify="between"
       >
-        <Typography size="8" weight="6">
-          libra
-        </Typography>
+        <Flex align="center" gap="5">
+          <Typography size="8" weight="6">
+            libra
+          </Typography>
+        </Flex>
         <ConnectWallet
           connectButtonVariant="ghost"
           connectButtonColorScheme="indigo"
           arweaveAccount={account}
+          appName="Libra"
           permissions={[
             "ACCESS_ADDRESS",
             "ACCESS_ALL_ADDRESSES",
             "DISPATCH",
             "SIGN_TRANSACTION",
+            "ACCESS_ARWEAVE_CONFIG",
           ]}
         />
       </Flex>
@@ -122,7 +127,7 @@ export default function Home() {
             </Flex>
             All Bookmarks
           </Typography>
-          {data && data.length > 0 && !isLoading && (
+          {data && data.length > 0 && walletAddress && (
             <CreateDialog>
               <Button colorScheme="indigo" variant="solid">
                 Bookmark a Transaction
@@ -132,7 +137,7 @@ export default function Home() {
         </Flex>
         {walletAddress ? (
           <>
-            {!isLoading && data && data.length === 0 && (
+            {!isLoading && data?.length === 0 && (
               <Flex
                 css={{
                   br: "$5",
@@ -165,7 +170,7 @@ export default function Home() {
               </Flex>
             )}
             {isLoading && <Loader />}
-            {isSuccess && (
+            {data && data.length > 0 && (
               <Flex direction="column" gap="5">
                 {data?.map((data) => (
                   <Link
@@ -196,7 +201,7 @@ export default function Home() {
                     }}
                     variant="noUnderline"
                     href={`https://arweave.net/${data.targetId}`}
-                    key={data.targetId}
+                    key={data.id}
                   >
                     <Box css={{ display: "flex" }} as="span">
                       <ArrowRightIcon width={28} height={28} />

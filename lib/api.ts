@@ -1,4 +1,4 @@
-import { arweave, arweaveLocal, connect, webWallet } from "./arweave";
+import { arweave, arweaveLocal } from "./arweave";
 import arweaveGql, { Transaction } from "arweave-graphql";
 import { addFunds, mineBlock } from "./utils";
 import { Bookmark, UploadData } from "@/types";
@@ -20,8 +20,8 @@ export const saveTx = async (upload: UploadData) => {
       const savedTx = await arweave.createTransaction({
         data: `Bookmark: ${upload.targetId}`,
       });
-      savedTx.addTag("App-Name", "Permalib-alpha");
-      savedTx.addTag("App-Version", "0.0.1");
+      savedTx.addTag("Data-Protocol", "Libra");
+      savedTx.addTag("Variant", "0.0.1-alpha");
       savedTx.addTag("Data-Source", upload.targetId);
       savedTx.addTag("Title", upload.name);
       savedTx.addTag("Type", "bookmark");
@@ -31,7 +31,8 @@ export const saveTx = async (upload: UploadData) => {
       );
 
       const savedTxResult = await window.arweaveWallet.dispatch(savedTx);
-      console.log("transaction saved successfully", savedTxResult);
+
+      return savedTxResult.id;
     } else {
       throw new Error(
         "Transaction does not exist. Please provide a valid transaction."
@@ -57,8 +58,12 @@ export const getBookmarks = async (address: string | undefined) => {
           values: ["bookmark"],
         },
         {
-          name: "App-Name",
-          values: ["Permalib-alpha"],
+          name: "Data-Protocol",
+          values: ["Libra"],
+        },
+        {
+          name: "Variant",
+          values: ["0.0.1-alpha"],
         },
       ],
     });
@@ -77,9 +82,11 @@ export const getBookmarks = async (address: string | undefined) => {
 const transform = (node: Transaction) => {
   const name = node.tags.find((tag) => tag.name === "Title")?.value;
   const targetId = node.tags.find((tag) => tag.name === "Data-Source")?.value;
+  const id = node.id;
 
   return {
     name,
     targetId,
+    id,
   };
 };
