@@ -9,7 +9,7 @@ const walletAddress = await warp.arweave.wallets.jwkToAddress(jwk)
 console.log(JSON.stringify(jwk));
 console.log(walletAddress);
 
-const contractSrc = fs.readFileSync("./dist/contract.js", "utf-8");
+const contractSrc = fs.readFileSync("./build/contract.js", "utf-8");
 
 
 const { contractTxId } = await warp.deploy({

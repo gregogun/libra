@@ -1,56 +1,25 @@
 {
-  "name": "nextjs-arweave",
-  "version": "0.1.0",
+  "name": "libra",
+  "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@7.18.2",
+  "engines": {
+    "pnpm": "<=7"
+  },
   "scripts": {
-    "dev": "next dev",
-    "prebuild": "pnpm clean-build && node scripts/add-asset-prefix.mjs",
-    "postbuild": "node scripts/remove-asset-prefix.mjs && prettier --write './next.config.js'",
-    "build": "pnpm prebuild && next build && next export && pnpm postbuild",
-    "upload": "pnpm build && pnpm bundlr",
-    "upload-nc": "pnpm build && pnpm bundlr --no-confirmation",
-    "bundlr": "bundlr upload-dir out -c arweave -h https://node2.bundlr.network -w ./wallet.json --index-file index.html",
-    "build-contracts": "pnpm clean-build && node scripts/build.js",
-    "deploy-contracts": "node scripts/deploy-source.mjs",
-    "start": "next start",
-    "lint": "next lint",
-    "format": "prettier --write '**/*.{json,md,mjs,js,ts,jsx,tsx,yml,css}'",
-    "clean": "pnpm clean-build && rm -rf node_modules",
-    "clean-build": "rm -rf dist out*"
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "prettier": "prettier --write '**/*.{json,md,js,ts,jsx,tsx,yml,css}'",
+    "version": "pnpm changeset version && pnpm install --lockfile-only",
+    "release": "pnpm version && pnpm changeset publish"
   },
   "dependencies": {
-    "@aura-ui/react": "0.0.5-alpha.2",
-    "@next/font": "13.1.6",
-    "@radix-ui/react-form": "0.0.2",
-    "@radix-ui/react-icons": "1.3.0",
-    "@tanstack/react-query": "4.28.0",
-    "@verto/flex": "0.1.15",
-    "arconnect": "0.4.2",
-    "arweave": "1.12.4",
-    "arweave-account": "1.3.4",
-    "arweave-graphql": "0.0.5",
-    "arweave-wallet-ui-test": "0.0.11",
-    "formik": "2.2.9",
-    "motion": "10.15.5",
-    "motion-hooks": "0.1.1",
-    "next": "13.1.6",
-    "next-themes": "^0.2.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-robot": "^0.3.0",
-    "robot3": "0.4.0",
-    "warp-contracts": "1.2.52"
+    "@changesets/cli": "2.26.1",
+    "turbo": "1.4.7"
   },
-  "devDependencies": {
-    "@types/node": "18.11.18",
-    "@types/react": "18.0.27",
-    "@types/react-dom": "18.0.10",
-    "arlocal": "1.1.60",
-    "esbuild": "0.17.6",
-    "eslint": "8.33.0",
-    "eslint-config-next": "13.1.6",
-    "prettier": "2.8.4",
-    "replace-in-file": "6.3.5",
-    "typescript": "4.7.4"
-  }
+  "keywords": [],
+  "author": "gregogun97@gmail.com",
+  "license": "MIT"
 }
