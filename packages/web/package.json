@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "prebuild": "pnpm clean-build && node scripts/add-asset-prefix.mjs",
-    "postbuild": "node scripts/remove-asset-prefix.mjs && prettier --write './next.config.js'",
+    "postbuild": "node scripts/remove-asset-prefix.mjs && prettier --write ./next.config.js",
     "build": "pnpm prebuild && next build && next export && pnpm postbuild",
     "upload": "pnpm build && pnpm bundlr",
     "upload-nc": "pnpm build && pnpm bundlr --no-confirmation",
